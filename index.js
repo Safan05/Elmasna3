@@ -6,9 +6,10 @@ import YAML from 'yamljs';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { fileURLToPath } from 'url';
 import injectRoutes from './routes/v1/routes.js';
-dotenv.config();
+//dotenv.config();
 process.on("uncaughtException",(exception)=>{console.log("Exception !")});  // used to handle any sync exception that may happen
 process.on("unhandledRejection",(exception)=>{console.log("Rejection !")});  // used to handle any asyn rejection that may happen
 const __filename = fileURLToPath(import.meta.url);
