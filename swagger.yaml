@@ -4,6 +4,7 @@ info:
   version: 1.0.0
   description: API documentation for authentication endpoints
 servers:
+  - url: https://elmasna3-production.up.railway.app
   - url: http://localhost:{port}
     variables:
       port:
