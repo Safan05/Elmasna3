@@ -10,12 +10,14 @@ import rateLimit from 'express-rate-limit';
 import { fileURLToPath } from 'url';
 import injectRoutes from './routes/v1/routes.js';
 //dotenv.config();
+
 process.on("uncaughtException",(exception)=>{console.log("Exception !")});  // used to handle any sync exception that may happen
 process.on("unhandledRejection",(exception)=>{console.log("Rejection !")});  // used to handle any asyn rejection that may happen
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.set("trust proxy", 1);
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173"; // your frontend
 const allowedOrigins = [frontendUrl, 'http://localhost:5173']; // add more if needed
 app.use(cors({
