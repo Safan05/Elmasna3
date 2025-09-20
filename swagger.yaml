@@ -1,0 +1,167 @@
+openapi: 3.0.3
+info:
+  title: Elmasna3 Backend API
+  version: 1.0.0
+  description: API documentation for authentication endpoints
+servers:
+  - url: http://localhost:{port}
+    variables:
+      port:
+        default: "5000"
+paths:
+  /api/v1/auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user and send verification code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, name]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                name:
+                  type: string
+      responses:
+        '201':
+          description: User registered; verification code sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  uuid:
+                    type: string
+        '400':
+          description: Missing required fields
+        '409':
+          description: Email already in use
+        '500':
+          description: Internal server error
+  /api/v1/auth/verify:
+    post:
+      tags: [Auth]
+      summary: Verify email using 6-digit code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, code]
+              properties:
+                email:
+                  type: string
+                  format: email
+                code:
+                  type: string
+                  pattern: "^\\d{6}$"
+      responses:
+        '200':
+          description: Email verified and role updated
+        '400':
+          description: Invalid or expired code
+        '500':
+          description: Internal server error
+  /api/v1/auth/resend-code:
+    post:
+      tags: [Auth]
+      summary: Resend verification code to email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Verification code resent
+        '400':
+          description: Bad request or user already verified
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+  /api/v1/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Login successful; returns JWT and sets cookie
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: auth_token cookie is set
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  token:
+                    type: string
+        '400':
+          description: Missing credentials
+        '401':
+          description: Invalid email or password
+        '500':
+          description: Internal server error
+  /api/v1/auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current authenticated user
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Current user information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uuid:
+                    type: string
+                  email:
+                    type: string
+                  role:
+                    type: string
+        '401':
+          description: Unauthorized
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: auth_token
