@@ -9,6 +9,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { fileURLToPath } from 'url';
 import injectRoutes from './routes/v1/routes.js';
+import { verifyTransport } from './utils/mailer.js';
 //dotenv.config();
 
 process.on("uncaughtException",(exception)=>{console.log("Exception !")});  // used to handle any sync exception that may happen
@@ -44,4 +45,5 @@ injectRoutes(app);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  verifyTransport();
 });

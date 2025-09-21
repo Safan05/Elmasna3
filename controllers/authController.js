@@ -24,17 +24,18 @@ const CustomerRegisterController = async (req, res) => {
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
         await userQueries.setVerificationCode(email, code, expiresAt);
 
-        try {
-            await sendMail({
-                to: email,
-                subject: "Your verification code",
-                text: `Your Elmasna3 verification code is ${code}. It expires in 10 minutes.`,
-                html: `<p>Your Elmasna3 verification code is <b>${code}</b>. It expires in 10 minutes.</p>`
-            });
-        } catch (mailErr) {
-            console.error("Failed to send verification email:", mailErr.message);
-            // Still created user; allow resending later
-        }
+                (async () => {
+                    try {
+                        await sendMail({
+                            to: email,
+                            subject: "Your verification code",
+                            text: `Your Elmasna3 verification code is ${code}. It expires in 10 minutes.`,
+                            html: `<p>Your Elmasna3 verification code is <b>${code}</b>. It expires in 10 minutes.</p>`
+                        });
+                    } catch (mailErr) {
+                        console.error("Failed to send verification email:", mailErr.message);
+                    }
+                })();
 
         return res.status(201).json({ message: "User registered. Verification code sent to email.", uuid: userUuid });
     } catch (err) {
@@ -53,12 +54,18 @@ const ResendCodeController = async (req, res) => {
         const code = generateSixDigitCode();
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
         await userQueries.setVerificationCode(email, code, expiresAt);
-        await sendMail({
-            to: email,
-            subject: "Your verification code",
-            text: `Your Elmasna3 verification code is ${code}. It expires in 10 minutes.`,
-            html: `<p>Your Elmasna3 verification code is <b>${code}</b>. It expires in 10 minutes.</p>`
-        });
+                (async () => {
+                    try {
+                        await sendMail({
+                            to: email,
+                            subject: "Your verification code",
+                            text: `Your Elmasna3 verification code is ${code}. It expires in 10 minutes.`,
+                            html: `<p>Your Elmasna3 verification code is <b>${code}</b>. It expires in 10 minutes.</p>`
+                        });
+                    } catch (mailErr) {
+                        console.error("Failed to resend verification email:", mailErr.message);
+                    }
+                })();
         return res.status(200).json({ message: "Verification code resent" });
     } catch (err) {
         console.error("Error resending code:", err.message);
