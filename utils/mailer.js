@@ -1,15 +1,6 @@
 import nodemailer from 'nodemailer';
-
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: Number(process.env.SMTP_PORT || 465),
-  secure: process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : true, // true for 465, false for 587
-  pool: true,
-  maxConnections: Number(process.env.SMTP_MAX_CONNECTIONS || 5),
-  maxMessages: Number(process.env.SMTP_MAX_MESSAGES || 100),
-  connectionTimeout: Number(process.env.SMTP_CONNECTION_TIMEOUT || 15000), // 15s
-  greetingTimeout: Number(process.env.SMTP_GREETING_TIMEOUT || 10000), // 10s
-  socketTimeout: Number(process.env.SMTP_SOCKET_TIMEOUT || 20000), // 20s
+  service: "gmail",  // or use SMTP provider
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
