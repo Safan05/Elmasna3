@@ -29,6 +29,7 @@ export async function sendMail({ to, subject, text, html }) {
   const from = process.env.MAIL_FROM || process.env.EMAIL_USER;
   if (!from) throw new Error('MAIL_FROM or EMAIL_USER must be set');
   console.log(from,to,subject,text,html)
+  verifyTransport();
   return transporter.sendMail({ from, to, subject, text, html });
 }
 
