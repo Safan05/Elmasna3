@@ -3,7 +3,10 @@ import authController from '../../controllers/authController.js';
 import authToken from '../../middlewares/authmiddleware.js';
 const authRouter = express.Router();
 
-authRouter.post('/register', authController.CustomerRegisterController);
+authRouter.post('/register',(req,res,nxt)=>{
+    console.log("Registering user...");
+    nxt();
+}, authController.CustomerRegisterController);
 authRouter.post('/login', authController.LoginController);
 authRouter.post('/verify', authController.VerifyController);
 authRouter.post('/resend-code', authController.ResendCodeController);

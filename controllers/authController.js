@@ -9,6 +9,7 @@ function generateSixDigitCode() {
 
 const CustomerRegisterController = async (req, res) => {
     try {
+                console.log("Registering user...");
         const { email, password, name } = req.body;
         if (!email || !password || !name) {
             return res.status(400).json({ message: "Email, password, and name are required" });
