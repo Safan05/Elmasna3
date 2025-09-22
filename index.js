@@ -32,10 +32,10 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
-app.use(rateLimit({
+/*app.use(rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
-}));
+}));*/
 
 // Swagger setup
 const swaggerDocument = YAML.load(path.join(__dirname, 'swagger.yaml'));
