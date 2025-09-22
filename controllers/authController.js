@@ -2,6 +2,7 @@ import userQueries from "../models/userQueries.js";
 import bcrypt from "bcrypt";
 import signToken from "../utils/jwtAuthToken.js";
 import { sendMail } from "../utils/mailer.js";
+import { verificationEmail } from "../utils/emailTemplates.js";
 
 function generateSixDigitCode() {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -27,12 +28,13 @@ const CustomerRegisterController = async (req, res) => {
 
                 (async () => {
                     try {
-                        await sendMail({
-                            to: email,
-                            subject: "Your verification code",
-                            text: `Your Elmasna3 verification code is ${code}. It expires in 10 minutes.`,
-                            html: `<p>Your Elmasna3 verification code is <b>${code}</b>. It expires in 10 minutes.</p>`
+                        const { subject, text, html } = verificationEmail({
+                          appName: 'Elmasna3',
+                          code,
+                          supportEmail: 'support@elmasna3.com',
+                          frontendUrl: process.env.FRONTEND_URL
                         });
+                        await sendMail({ to: email, subject, text, html });
                     } catch (mailErr) {
                         console.error("Failed to send verification email:", mailErr.message);
                     }
@@ -57,12 +59,13 @@ const ResendCodeController = async (req, res) => {
         await userQueries.setVerificationCode(email, code, expiresAt);
                 (async () => {
                     try {
-                        await sendMail({
-                            to: email,
-                            subject: "Your verification code",
-                            text: `Your Elmasna3 verification code is ${code}. It expires in 10 minutes.`,
-                            html: `<p>Your Elmasna3 verification code is <b>${code}</b>. It expires in 10 minutes.</p>`
+                        const { subject, text, html } = verificationEmail({
+                          appName: 'Elmasna3',
+                          code,
+                          supportEmail: 'support@elmasna3.com',
+                          frontendUrl: process.env.FRONTEND_URL
                         });
+                        await sendMail({ to: email, subject, text, html });
                     } catch (mailErr) {
                         console.error("Failed to resend verification email:", mailErr.message);
                     }
