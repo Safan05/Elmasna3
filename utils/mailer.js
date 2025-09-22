@@ -1,29 +1,35 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-dotenv.config();
-const transporter = nodemailer.createTransport({
-  service: "gmail",  // or use SMTP provider
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+import { Resend } from 'resend';
+
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const resend = new Resend(RESEND_API_KEY);
 
 export async function verifyTransport() {
-  try {
-    await transporter.verify();
-    console.log('SMTP transporter verified and ready');
-  } catch (err) {
-    console.error('SMTP transporter verification failed:', err.message);
+  if (!RESEND_API_KEY) {
+    console.error('RESEND_API_KEY is not set. Emails will fail.');
+  } else {
+    console.log('Resend client configured.');
   }
 }
 
 export async function sendMail({ to, subject, text, html }) {
-  const from = process.env.MAIL_FROM || process.env.EMAIL_USER;
-  if (!from) throw new Error('MAIL_FROM or EMAIL_USER must be set');
-  console.log(from, to, subject, text, html);
-  console.log("Sending email...");
-  return transporter.sendMail({ from, to, subject, text, html });
+  const from = process.env.MAIL_FROM; // e.g., "Elmasna3 <no-reply@yourdomain.com>"
+  if (!RESEND_API_KEY) throw new Error('RESEND_API_KEY must be set');
+  if (!from) throw new Error('MAIL_FROM must be set for Resend');
+  console.log(`Sending email via Resend → to: ${to}, subject: "${subject}", from: ${from}`);
+  const { data, error } = await resend.emails.send({
+    from,
+    to,
+    subject,
+    text,
+    html,
+  });
+  if (error) {
+    console.error('Resend send error:', error);
+    const msg = error?.message || (typeof error === 'string' ? error : 'Unknown Resend error');
+    throw new Error(`Resend email failed: ${msg}`);
+  }
+  console.log('Resend email queued. id:', data?.id || '(no id)');
+  return data;
 }
 
 export default { sendMail, verifyTransport };
