@@ -104,9 +104,14 @@ const LoginController = (req, res) => {
             if (!passwordMatch) {
                 return res.status(401).json({ message: "Invalid email or password" });
             }
-            const token = signToken(user.uuid, user.role, user.email);
+            const token = signToken(user.uuid, user.role, user.email,user.name);
             res.cookie("auth_token", token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' });
-            res.status(200).json({ message: "Login successful", token });
+            res.status(200).json({ message: "Login successful", 
+                    uuid:user.id,
+                    email:user.email,
+                    role:user.role,
+                    name:user.name
+             });
         })
         .catch((err) => {
             console.error("Error during login:", err.message);
@@ -118,10 +123,12 @@ export const getMe = (req, res) => {
   if (!user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
+  
   res.status(200).json({ 
     uuid:user._id,
     email:user._email,
     role:user._role
+    ,name:user._name
    });
 };
 
