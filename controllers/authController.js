@@ -29,9 +29,9 @@ const CustomerRegisterController = async (req, res) => {
                 (async () => {
                     try {
                         const { subject, text, html } = verificationEmail({
-                          appName: 'Elmasna3',
+                          appName: 'Elmasnaa',
                           code,
-                          supportEmail: 'support@elmasna3.com',
+                          supportEmail: 'support@elmasnaa.com',
                           frontendUrl: process.env.FRONTEND_URL
                         });
                         await sendMail({ to: email, subject, text, html });

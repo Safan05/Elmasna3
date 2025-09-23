@@ -1,4 +1,4 @@
-export function verificationEmail({ appName = 'Elmasna3', code, supportEmail, frontendUrl }) {
+export function verificationEmail({ appName = 'Elmasnaa', code, supportEmail, frontendUrl }) {
   const subject = `${appName} verification code`;
   const text = `Your ${appName} verification code is ${code}. It expires in 10 minutes.`;
   const brandColor = '#FF6700';
