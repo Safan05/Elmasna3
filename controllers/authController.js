@@ -124,6 +124,17 @@ const LoginController = (req, res) => {
             res.status(500).json({ message: "Internal server error" });
         });
 };
+export const LogoutController = (req, res) => {
+    console.log("Logging out");
+    res.clearCookie("auth_token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "None",
+        path: "/"
+    });
+    res.status(200).json({ message: "Logout successful" });
+};
+
 export const getMe = (req, res) => {
   const user = req.user;
   if (!user) {
