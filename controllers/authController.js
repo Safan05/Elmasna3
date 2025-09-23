@@ -105,7 +105,13 @@ const LoginController = (req, res) => {
                 return res.status(401).json({ message: "Invalid email or password" });
             }
             const token = signToken(user.uuid, user.role, user.email,user.name);
-            res.cookie("auth_token", token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' });
+            res.cookie("auth_token", token, { 
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "None",
+                path: "/",
+                maxAge: 24 * 60 * 60 * 1000
+            });
             res.status(200).json({ message: "Login successful", 
                     uuid:user.id,
                     email:user.email,
