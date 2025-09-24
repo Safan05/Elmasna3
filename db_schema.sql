@@ -7,6 +7,8 @@ CREATE TABLE users (
   verification_code VARCHAR(6),
   verification_expires TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  provider VARCHAR(20),      -- 'google', 'facebook', 'local'
+  provider_id VARCHAR(100),  -- the unique ID from that provider
   role VARCHAR(20) NOT NULL DEFAULT 'none'
 );
 

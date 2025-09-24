@@ -124,7 +124,7 @@ const LoginController = (req, res) => {
             res.status(500).json({ message: "Internal server error" });
         });
 };
-export const LogoutController = (req, res) => {
+const LogoutController = (req, res) => {
     console.log("Logging out");
     res.clearCookie("auth_token", {
         httpOnly: true,
@@ -149,4 +149,4 @@ export const getMe = (req, res) => {
    });
 };
 
-export default { CustomerRegisterController, LoginController, VerifyController, ResendCodeController, getMe };
+export default { CustomerRegisterController, LoginController, VerifyController, ResendCodeController, getMe,LogoutController };
