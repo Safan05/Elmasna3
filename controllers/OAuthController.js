@@ -4,28 +4,29 @@ import signToken from "../utils/jwtAuthToken.js";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
-const googleRegister = async (req,res) => {
-    passport.authenticate('google',{scope: ['profile','email']});
+const googleRegister = async (req,res,nxt) => {
+    console.log("Initiating Google OAuth");
+    return passport.authenticate('google',{scope: ['profile','email']})(req,res,nxt);
 }
-const googleCallback = async (req,res)=>{
-    passport.use(new GoogleStrategy({
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "/api/v1/auth/google/callback"
-    }, async (accessToken, refreshToken, profile, done) => {
-        try {
-            let user = await userQueries.findByProviderId('google', profile.id);
-            if (!user) {
-                const email = profile.emails[0].value;
-                const name = profile.displayName;
-                user = await userQueries.createOAuthUser(email, name, 'google', profile.id);
-            }
-            return done(null, user);
-        } catch (err) {
-            return done(err, null);
-        }
-    }));
-}
+const googleCallback = (req, res, next) => {
+  passport.authenticate("google", { failureRedirect: "/login" }, (err, user) => {
+    if (err || !user) {
+      return res.redirect("/login");
+    }
+
+    console.log("OAuth user:", user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const token = signToken(user.uuid, user.role, user.email, user.name);
+    res.cookie("auth-token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
+    });
+    res.redirect("http://localhost:3000"); // frontend URL
+  })(req, res, next);
+};
 const FacebookRegister = async (req,res)=>{
 
 }

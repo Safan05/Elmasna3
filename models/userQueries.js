@@ -128,8 +128,8 @@ class userModel {
     }
     async createOAuthUser(email, name, provider, providerId) {
       try {
-        const query = "INSERT INTO users (email, name, provider, provider_id, role) VALUES ($1, $2, $3, $4, 'customer') RETURNING uuid";
-        const result = await this.db.query(query, [email, name, provider, providerId]);
+        const query = "INSERT INTO users (email, name, provider, provider_id, role, password) VALUES ($1, $2, $3, $4, 'customer', $5) RETURNING uuid";
+        const result = await this.db.query(query, [email, name, provider, providerId, '']);
         const userUuid = result.rows[0]?.uuid;
         console.log("OAuth user created successfully");
         return userUuid;
