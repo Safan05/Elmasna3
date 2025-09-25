@@ -205,7 +205,19 @@ paths:
     post:
       tags: [Users]
       summary: Upload user photo
-      description: Placeholder endpoint for photo upload. Currently returns a success message.
+      description: Uploads a user photo to Cloudinary.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                photo:
+                  type: string
+                  format: binary
       responses:
         '200':
           description: Photo uploaded successfully
@@ -216,6 +228,70 @@ paths:
                 properties:
                   message:
                     type: string
+                  url:
+                    type: string
+                  public_id:
+                    type: string
+        '401':
+          description: Unauthorized
+  /api/v1/users/update-password:
+    put:
+      tags: [Users]
+      summary: Change user password
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [currentPassword, newPassword, email]
+              properties:
+                currentPassword:
+                  type: string
+                newPassword:
+                  type: string
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Password changed successfully
+        '400':
+          description: Missing fields
+        '404':
+          description: User not found
+        '500':
+          description: Error changing password
+  /api/v1/users/update-profile:
+    put:
+      tags: [Users]
+      summary: Update user profile
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, name]
+              properties:
+                email:
+                  type: string
+                  format: email
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Profile updated successfully
+        '400':
+          description: Missing fields
+        '404':
+          description: User not found
+        '500':
+          description: Error updating profile
   /api/v1/admin/users:
     get:
       tags: [Admin]
