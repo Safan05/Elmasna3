@@ -24,7 +24,7 @@ const googleCallback = (req, res, next) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: "None",
     });
-    const Frontend_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+    const Frontend_URL = process.env.FRONTEND_URL || "http://localhost:5173";
     res.redirect(Frontend_URL);
   })(req, res, next);
 };
