@@ -149,15 +149,25 @@ class userModel {
         throw error;
       }
     }
-    async updateProfile(email, name) {
+    async updateName(uuid, name) {
       try {
-        const query = "UPDATE users SET name = $1 WHERE email = $2";
-        await this.db.query(query, [name, email]);
-        console.log("User profile updated successfully");
+        const query = "UPDATE users SET name = $1 WHERE uuid = $2";
+        await this.db.query(query, [name, uuid]);
+        console.log("User name updated successfully");
       } catch (error) {
-        console.error("Error updating user profile:", error.message);
+        console.error("Error updating user name:", error.message);
         throw error;
       }
+    }
+    async updateEmail(uuid, email) {
+      try {
+        const query = "UPDATE users SET email = $1 WHERE uuid = $2";
+        await this.db.query(query, [email, uuid]);
+        console.log("User email updated successfully");
+      } catch (error) {
+        console.error("Error updating user email:", error.message);
+        throw error;
+      } 
     }
 }
 export default new userModel(db);

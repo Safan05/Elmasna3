@@ -1,6 +1,7 @@
 import userQueries from "../models/userQueries.js";
 import bcrypt from "bcrypt";
 import signToken from "../utils/jwtAuthToken.js";
+import { use } from "react";
 
 const ChangePassword = async (req, res) => {
     const { currentPassword, newPassword, email } = req.body;
@@ -40,17 +41,22 @@ const ChangePassword = async (req, res) => {
 };
 
 const UpdateProfile = async (req, res) => {
-    const {email,name} = req.body;
-    if (!email || !name) {
-        return res.status(400).json({ message: "Email and name are required" });
+    const {email,name,uuid} = req.body;
+    if (!uuid) {
+        return res.status(400).json({ message: "uuid is required" });
     }
     try {
-        const user = await userQueries.getUserByEmail(email);
+        const user = await userQueries.getUserByUuid(uuid);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        await userQueries.updateProfile(email, name);
-        const token = signToken(user.uuid, user.role, email, name);
+        if(email !== user.email) {
+            await userQueries.updateEmail(user.uuid, email);
+        }
+        if(name !== user.name) {
+            await userQueries.updateName(user.uuid, name);
+        }
+        const token = signToken(user.uuid, user.role, user.email, user.name);
         res.cookie("auth-token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
