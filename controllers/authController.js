@@ -112,11 +112,11 @@ const LoginController = (req, res) => {
                 path: "/",
                 maxAge: 24 * 60 * 60 * 1000
             });
-            res.status(200).json({ message: "Login successful", 
-                    uuid:user.id,
-                    email:user.email,
-                    role:user.role,
-                    name:user.name
+            res.status(200).json({ message: "Login successful",
+                    uuid: user.uuid,
+                    email: user.email,
+                    role: user.role,
+                    name: user.name
              });
         })
         .catch((err) => {

@@ -138,5 +138,16 @@ class userModel {
         throw error;
       }
     }
+    async changeUserPassword(email, newPassword) {
+      try {
+        const query = "UPDATE users SET password = $1 WHERE email = $2";
+        await this.db.query(query, [newPassword, email]);
+        console.log("User password changed successfully");
+      }
+      catch (error) {
+        console.error("Error changing user password:", error.message);
+        throw error;
+      }
+    }
 }
 export default new userModel(db);

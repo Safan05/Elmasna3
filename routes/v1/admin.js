@@ -6,7 +6,7 @@ const adminRouter = express.Router();
 
 adminRouter.get('/users', adminController.getAllUsers);
 adminRouter.post('/update-role', adminController.updateRole);
-adminRouter.post('/add-product', authToken, adminAuth, (req, res) => {
+adminRouter.post('/add-product', (req, res) => {
     // Logic to handle product addition
     res.json({ message: "Product added successfully" });
 });
