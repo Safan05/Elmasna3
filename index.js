@@ -27,7 +27,12 @@ const app = express();
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173"; // your frontend
 const allowedOrigins = [frontendUrl, 'http://localhost:5173']; // add more if needed
 app.use(cors({
-   origin: allowedOrigins,
+   origin: function (origin, callback) {
+     // allow requests with no origin (like mobile apps or curl requests)
+     if (!origin) return callback(null, true);
+     if (allowedOrigins.includes(origin)) return callback(null,true);
+     return callback(new Error("Not allowed by CORS: " + origin));
+   },
   credentials: true               // allow cookies
 }));
 app.use(express.json());
