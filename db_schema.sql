@@ -9,6 +9,7 @@ CREATE TABLE users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   provider VARCHAR(20),      -- 'google', 'facebook', 'local'
   provider_id VARCHAR(100),  -- the unique ID from that provider
+  image_url VARCHAR(255),    -- URL of the user's profile image
   role VARCHAR(20) NOT NULL DEFAULT 'none'
 );
 
