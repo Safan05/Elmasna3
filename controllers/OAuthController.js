@@ -24,7 +24,8 @@ const googleCallback = (req, res, next) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: "None",
     });
-    res.redirect("http://localhost:3000"); // frontend URL
+    const Frontend_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+    res.redirect(Frontend_URL);
   })(req, res, next);
 };
 const FacebookRegister = async (req,res)=>{
