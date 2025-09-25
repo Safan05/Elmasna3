@@ -15,7 +15,8 @@ const ChangePassword = async (req, res) => {
         }
         const passwordMatch = await bcrypt.compare(currentPassword, user.password);
         if (passwordMatch) {
-            await userQueries.changeUserPassword(email, newPassword);
+            const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+            await userQueries.changeUserPassword(email, hashedNewPassword);
             const token = signToken(user.uuid, user.role, user.email, user.name);
             res.cookie("auth-token", token, {
                 httpOnly: true,
