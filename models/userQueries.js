@@ -149,5 +149,15 @@ class userModel {
         throw error;
       }
     }
+    async updateProfile(email, name) {
+      try {
+        const query = "UPDATE users SET name = $1 WHERE email = $2";
+        await this.db.query(query, [name, email]);
+        console.log("User profile updated successfully");
+      } catch (error) {
+        console.error("Error updating user profile:", error.message);
+        throw error;
+      }
+    }
 }
 export default new userModel(db);
