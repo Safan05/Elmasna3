@@ -98,11 +98,17 @@ const LoginController = (req, res) => {
     userQueries.getUserByEmail(email)
         .then(async (user) => {
             if (!user) {
+                res.clearCookie("auth_token");
                 return res.status(401).json({ message: "Invalid email or password" });
             }
             const passwordMatch = await bcrypt.compare(password, user.password);
             if (!passwordMatch) {
+                res.clearCookie("auth_token");
                 return res.status(401).json({ message: "Invalid email or password" });
+            }
+            if(user.role === 'none') {
+                res.clearCookie("auth_token");
+                return res.status(403).json({ message: "Email not verified. Please verify your email." });
             }
             const token = signToken(user.uuid, user.role, user.email,user.name);
             res.cookie("auth_token", token, { 
@@ -135,18 +141,26 @@ const LogoutController = (req, res) => {
     res.status(200).json({ message: "Logout successful" });
 };
 
-export const getMe = (req, res) => {
+ const getMe = async (req, res) => {
   const user = req.user;
   if (!user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  
+  try{
+  const photo = await userQueries.GetUserPhoto(user._id);
+  console.log(photo);
   res.status(200).json({ 
     uuid:user._id,
     email:user._email,
-    role:user._role
-    ,name:user._name
-   });
+    role:user._role,
+    name:user._name,
+    photo: photo
+  });
+}
+    catch(err){
+        console.error("Error getting your data:", err.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
 };
 
 export default { CustomerRegisterController, LoginController, VerifyController, ResendCodeController, getMe,LogoutController };

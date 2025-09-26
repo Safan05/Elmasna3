@@ -18,7 +18,7 @@ const ChangePassword = async (req, res) => {
             const hashedNewPassword = await bcrypt.hash(newPassword, 10);
             await userQueries.changeUserPassword(email, hashedNewPassword);
             const token = signToken(user.uuid, user.role, user.email, user.name);
-            res.cookie("auth-token", token, {
+            res.cookie("auth_token", token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
                 sameSite: "None",
@@ -58,7 +58,7 @@ const UpdateProfile = async (req, res) => {
             await userQueries.updateName(user.uuid, name);
         }
         const token = signToken(user.uuid, user.role, user.email, user.name);
-        res.cookie("auth-token", token, {
+        res.cookie("auth_token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "None",

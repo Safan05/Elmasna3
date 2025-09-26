@@ -106,6 +106,26 @@ class userModel {
         throw error;
       }
     }
+    async getCustomerCount() {
+      try {
+        const query = "SELECT COUNT(*) FROM users WHERE role = 'customer'";
+        const result = await this.db.query(query);
+        return parseInt(result.rows[0].count, 10);
+      } catch (error) {
+        console.error("Error getting customer count:", error.message);
+        throw error;
+      }
+    }
+    async getAdminCount() {
+      try {
+        const query = "SELECT COUNT(*) FROM users WHERE role = 'admin'";
+        const result = await this.db.query(query);
+        return parseInt(result.rows[0].count, 10);
+      } catch (error) {
+        console.error("Error getting admin count:", error.message);
+        throw error;
+      }
+    }
     async deleteUser(id){
       try {
         const query = "DELETE FROM users WHERE uuid = $1";
@@ -169,5 +189,17 @@ class userModel {
         throw error;
       } 
     }
+    async GetUserPhoto(uuid){
+      try{
+        const query = "Select image_url FROM users WHERE uuid= $1";
+        const result=await this.db.query(query,[uuid]);
+        const photo =  result.rows[0].image_url;
+        return photo;
+      }
+      catch(error){
+        console.error("Error getting user photo", error.message);
+        throw error;
+    }
+  }
 }
 export default new userModel(db);

@@ -48,3 +48,13 @@ CREATE TABLE productImages (
   alt_text VARCHAR(100),
   is_primary BOOLEAN DEFAULT false
 );
+
+-- reviews table
+CREATE TABLE reviews (
+  id SERIAL PRIMARY KEY,
+  rating INT CHECK (rating >= 1 AND rating <= 5),
+  comment TEXT,
+  user_uuid UUID REFERENCES users(uuid) ON DELETE SET NULL,
+  product_id INT REFERENCES Products(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
