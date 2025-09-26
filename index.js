@@ -10,7 +10,7 @@ import rateLimit from 'express-rate-limit';
 import { fileURLToPath } from 'url';
 import injectRoutes from './routes/v1/routes.js';
 import { verifyTransport } from './utils/mailer.js';
-import './config/passportConfig.js';
+import './configure/passportConfig.js';
 dotenv.config();
 
 process.on("uncaughtException", (err) => {
